@@ -33,6 +33,7 @@
   "homepage": "https://github.com/djdiox/restarting-spotify-multi-os#readme",
   "dependencies": {
     "dotenv": "^16.0.1",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "yargs": "^17.5.1"
   }
 }
