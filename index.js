@@ -47,11 +47,7 @@ module.exports = async (name = process.env.APPLICATION_NAME || 'spotify', result
             console.log('Killing Process', result.process);
             result.killed = process.kill(result.process.pid);
             console.log('Killed Process', result);
-            setTimeout(function () {
-                result.respawned = child_process.execFileSync(result.path);
-                console.log('Respawned Process', result.respawned)
-                resolve()
-            }, 100);
+            resolve(result);
         })
     }
 };
