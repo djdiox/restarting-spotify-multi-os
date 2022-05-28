@@ -4,6 +4,7 @@
   "description": "Due to a bug, that spotify does not close properly, it occurs that starting spotify after closing is not possible, with  an error saying \"Spotify is already running\"",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/djdiox/restarting-spotify-multi-os#readme",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "ps-node": "^0.1.6"
   }
 }
