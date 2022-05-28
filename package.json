@@ -1,6 +1,6 @@
 {
   "name": "restart-spotify_multi-os",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Due to a bug, that spotify does not close properly, it occurs that starting spotify after closing is not possible, with  an error saying \"Spotify is already running\"",
   "main": "index.js",
   "scripts": {
