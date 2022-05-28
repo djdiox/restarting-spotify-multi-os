@@ -1,9 +1,60 @@
 const os = require('os');
-const ps = require('ps-node');
 const process = require('process');
 const child_process = require('child_process');
 const fs = require('fs');
 require('dotenv').config('.env');
+
+module.exports = async (name = process.env.APPLICATION_NAME || 'spotify', result = {
+    name,
+    success: false,
+    message: '',
+    error: null,
+    path: '',
+    killed: false,
+    respawned: false,
+    homedir: os.homedir(),
+    os: process.platform,
+    started: new Date(),
+    finished: null,
+    runtimeSeconds: 0,
+    platform: process.platform,
+    process: null
+}) => {
+    try {
+        result = await findProcess(name, result);
+        var noError = true
+        if (fs.existsSync(result.path) === false) {
+            result.message = 'Sorry! Spotify could not be found, \nPlease define SPOTIFY_DIR in the Environment Variables';
+            noError = false;
+        } else if (!result.process) {
+            result.message = 'Spotify Process is not running'
+            noError = false;
+        }
+        result.success = noError;
+        if (result.success) {
+            await finalize(result);
+        } else {
+            result.error = result.message;
+        }
+        console.log('Finished Process', result);
+        return result;
+    } catch (error) {
+        return logErr(error, result)
+    }
+
+    async function finalize(result) {
+        return new Promise(resolve => {
+            console.log('Killing Process', result.process);
+            result.killed = process.kill(result.process.pid);
+            console.log('Killed Process', result);
+            setTimeout(function () {
+                result.respawned = child_process.execFileSync(result.path);
+                console.log('Respawned Process', result.respawned)
+                resolve()
+            }, 100);
+        })
+    }
+};
 
 /**
  * Logs an Error Object properly
@@ -74,90 +125,3 @@ const findProcess = (query, result) => {
         });
     })
 };
-
-const restart = async (name = process.env.APPLICATION_NAME || 'spotify', result = {
-    name,
-    success: false,
-    message: '',
-    error: null,
-    path: '',
-    killed: false,
-    respawned: false,
-    homedir: os.homedir(),
-    os: process.platform,
-    started: new Date(),
-    finished: null,
-    runtimeSeconds: 0,
-    platform: process.platform,
-    process: null
-}) => {
-    try {
-        result = await findProcess(name, result);
-        var noError = true
-        if (fs.existsSync(result.path) === false) {
-            result.message = 'Sorry! Spotify could not be found, \nPlease define SPOTIFY_DIR in the Environment Variables';
-            noError = false;
-        } else if (!result.process) {
-            result.message = 'Spotify Process is not running'
-            noError = false;
-        }
-        result.success = noError;
-        if (result.success) {
-            await finalize(result);
-        } else {
-            result.error = result.message;
-        }
-        console.log('Finished Process', result);
-        return result;
-    } catch (error) {
-        return logErr(error, result)
-    }
-
-    async function finalize(result) {
-        return new Promise(resolve => {
-            console.log('Killing Process', result.process);
-            result.killed = process.kill(result.process.pid);
-            console.log('Killed Process', result);
-            setTimeout(function () {
-                result.respawned = child_process.execFileSync(result.path);
-                console.log('Respawned Process', result.respawned)
-                resolve()
-            }, 100);
-        })
-    }
-}
-
-module.exports = restart;
-
-(async () => {
-    let result = {
-        success: false,
-        message: '',
-        error: null,
-        path: '',
-        killed: false,
-        respawned: false,
-        homedir: os.homedir(),
-        os: process.platform,
-        started: new Date(),
-        finished: null,
-        runtimeSeconds: 0,
-        platform: process.platform,
-        process: null
-    }
-    try {
-        result = await restart();
-        console.log(result);
-    } catch (error) {
-        console.error(error);
-        result.error = error;
-        process.exit(1);
-    } finally {
-        result.finished = new Date();
-        result.runtimeSeconds = Math.abs((result.finished.getTime() - result.started.getTime()) / 1000);
-        if(process.env?.LOG?.toLowerCase() === 'true') {
-            fs.writeFileSync('./logs/details-run-' + new Date().getTime() + '.json', JSON.stringify(result, null, 2));
-        }
-        process.exit(0);
-    }
-})()
