@@ -1,0 +1,33 @@
+{
+  "name": "restart-spotify_multi-os",
+  "version": "1.0.0",
+  "description": "Due to a bug, that spotify does not close properly, it occurs that starting spotify after closing is not possible, with  an error saying \"Spotify is already running\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djdiox/restarting-spotify-multi-os.git"
+  },
+  "keywords": [
+    "spotify",
+    "crash",
+    "close",
+    "restart",
+    "reopen",
+    "error",
+    "fix",
+    "workaround",
+    "tool"
+  ],
+  "author": "Markus Wagner (djdiox)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/djdiox/restarting-spotify-multi-os/issues"
+  },
+  "homepage": "https://github.com/djdiox/restarting-spotify-multi-os#readme",
+  "dependencies": {
+    "ps-node": "^0.1.6"
+  }
+}
